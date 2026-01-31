@@ -1,0 +1,16 @@
+{
+    "name": "cvefinder/docs",
+    "description": "CVEFinder.io Documentation Site",
+    "type": "project",
+    "require": {
+        "erusev/parsedown": "^1.7"
+    },
+    "require-dev": {},
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "CVEFinder.io",
+            "email": "support@cvefinder.io"
+        }
+    ]
+}

@@ -1,0 +1,11 @@
+# CVEFinder.io Documentation - robots.txt
+
+# Allow all search engines
+User-agent: *
+Allow: /
+
+# Disallow vendor directory (not needed in search results)
+Disallow: /vendor/
+
+# Sitemap location
+Sitemap: https://docs.cvefinder.io/sitemap.xml
