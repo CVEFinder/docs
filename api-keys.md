@@ -2,11 +2,19 @@
 
 ## Overview
 
-CVEFinder.io provides API keys for **Pro tier users** to programmatically access the platform's features. API keys offer a secure, token-based authentication method for automated scanning and CVE lookups.
+CVEFinder.io provides API keys for **Pro tier users** to programmatically access the platform's features. API keys offer a secure, token-based authentication method for automated vulnerability scanning, CVE database queries, monitoring management, and exporting scan results.
 
 ## Key Features
 
 - **Pro Tier Exclusive**: API keys are only available for users with active Pro subscriptions
+- **Full Platform Access**: Access all Pro features programmatically including:
+  - Website vulnerability scanning (10 scans/day)
+  - CVE database queries with version-based filtering
+  - Exploit database & PoC code access
+  - Email monitoring management (up to 5 URLs)
+  - Product/vendor CVE alerts (up to 10)
+  - JSON export of scan results and CVE data
+  - Manual rescan/refresh of existing scans
 - **Secure Storage**: Keys are cryptographically hashed before storage
 - **Rate Limiting**: Built-in tracking of API usage
 - **Key Management**: Create, revoke, and rotate keys as needed
@@ -139,14 +147,31 @@ Include your API key in the `Authorization` header of all API requests:
 Authorization: Bearer cvf_a1b2c3d4e5f6789012345678901234567890abcdef123456
 ```
 
-### Example Request
+### Example Requests
 
+For complete API endpoint documentation, see the [API Reference](/?page=api-reference) guide.
+
+**Scan a website:**
 ```bash
-curl -X GET https://cvefinder.io/api/scan \
+curl -X POST https://cvefinder.io/api/scan \
   -H "Authorization: Bearer cvf_a1b2c3d4e5f6789012345678901234567890abcdef123456" \
   -H "Content-Type: application/json" \
-  -d '{"url": "https://example.com"}'
+  -d '{"target": "https://example.com"}'
 ```
+
+**Get CVEs for a product with version filtering (Pro feature):**
+```bash
+curl -X GET "https://cvefinder.io/api/product-cves?product_id=123&version=8.1.5&page=1&per_page=20&sort=epss" \
+  -H "Authorization: Bearer cvf_a1b2c3d4e5f6789012345678901234567890abcdef123456"
+```
+
+**Get exploit information for a CVE (Pro feature):**
+```bash
+curl -X GET "https://cvefinder.io/api/get-exploits?cve_id=456" \
+  -H "Authorization: Bearer cvf_a1b2c3d4e5f6789012345678901234567890abcdef123456"
+```
+
+See the [API Reference](/?page=api-reference) for all available endpoints, request/response formats, and detailed documentation.
 
 ### How It Works
 
@@ -302,20 +327,15 @@ CVEFINDER_API_KEY=cvf_a1b2c3d4e5f6789012345678901234567890abcdef123456
 - Monitor request counts for anomalies
 - Set up alerts for unusual API usage patterns
 
-### Key Rotation Schedule
-
-| Environment | Rotation Frequency |
-|-------------|-------------------|
-| Production  | Every 90 days     |
-| Staging     | Every 180 days    |
-| Development | As needed         |
-
 ## Limitations
 
 - **Maximum Keys**: 5 active API keys per user
 - **Pro Tier Only**: API keys require an active Pro subscription
+- **Scan Quota**: 10 scans per day (same limit as web interface)
+- **Monitoring Limits**: Up to 5 URLs for email monitoring, up to 10 product/vendor alerts
 - **JWT Required for Management**: API keys cannot create, revoke, or rotate other keys (prevents privilege escalation)
 - **Account-Specific**: Each key is tied to a specific user account
+- **Pro Features Only**: Some endpoints (version filtering, exploit database, JSON exports) require Pro tier
 
 ## Error Codes
 
@@ -337,8 +357,6 @@ Every API request is logged for analytics and security auditing:
 - Response status codes
 - Client information
 
-This data is available in your dashboard for analytics and security monitoring.
-
 ## Frequently Asked Questions
 
 ### Can I use API keys for browser-based authentication?
@@ -352,6 +370,21 @@ Your API keys will stop working immediately when your subscription becomes inact
 ### Can I increase the 5-key limit?
 
 The 5-key limit is currently fixed for all Pro users. If you need more keys, contact support@cvefinder.io to discuss enterprise options.
+
+### What Pro features can I access via API?
+
+With API keys, you can access all Pro tier features:
+- **Scanning**: 10 website scans per day with full technology/version detection
+- **CVE Filtering**: Version-based CVE filtering for precise vulnerability matching
+- **Exploit Database**: Access PoC code and exploit information for CVEs
+- **Monitoring**: Manage email monitoring (5 URLs) and product/vendor alerts (10 max)
+- **Exports**: JSON export of scan results and CVE data
+- **Manual Rescans**: Trigger manual rescan/refresh of existing scans
+- **Sorting**: Sort CVEs by EPSS score, newest, or oldest date
+
+### Do API calls count toward my daily scan quota?
+
+Yes. API scans count toward your 10 scans per day limit (same as web interface scans).
 
 ### How are API keys stored?
 
@@ -371,7 +404,6 @@ No. If you lose an API key, you must either rotate the existing key (if you know
 For issues or questions:
 - **Email**: support@cvefinder.io
 - **Documentation**: docs.cvefinder.io
-- **Status**: status.cvefinder.io
 
 ## Changelog
 

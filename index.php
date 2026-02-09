@@ -394,6 +394,8 @@ $title = $matches[1] ?? 'CVEFinder.io Documentation';
         <aside>
             <h3>Documentation</h3>
             <ul>
+                <li><a href="?page=faq" class="<?= $page === 'faq' ? 'active' : '' ?>">FAQ</a></li>
+                <li><a href="?page=api-reference" class="<?= $page === 'api-reference' ? 'active' : '' ?>">API Reference</a></li>
                 <li><a href="?page=api-keys" class="<?= $page === 'api-keys' ? 'active' : '' ?>">API Keys <span class="badge pro">PRO</span></a></li>
             </ul>
         </aside>
