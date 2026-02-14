@@ -31,31 +31,77 @@ $html = $parsedown->text($markdown);
 // Extract title from first H1
 preg_match('/<h1>(.*?)<\/h1>/', $html, $matches);
 $title = $matches[1] ?? 'CVEFinder.io Documentation';
+
+// Extract first paragraph for meta description
+preg_match('/<p>(.*?)<\/p>/', $html, $descMatches);
+$rawDescription = $descMatches[1] ?? 'Official CVEFinder.io API documentation. Learn how to integrate vulnerability scanning into your applications.';
+$description = strip_tags($rawDescription);
+$description = substr($description, 0, 160); // Limit to 160 characters for SEO
+
+// Page-specific metadata
+$pageMetadata = [
+    'api-reference' => [
+        'title' => 'API Reference - Complete REST API Documentation',
+        'description' => 'Complete CVEFinder.io REST API reference. Scan websites, query CVE database, manage monitoring, bulk scans, and more with our comprehensive API.',
+        'keywords' => 'CVEFinder API, REST API, vulnerability scanner API, CVE API, bulk scan API, security API documentation'
+    ],
+    'api-keys' => [
+        'title' => 'API Keys Guide - Authentication & Integration',
+        'description' => 'Learn how to generate and manage CVEFinder.io API keys for programmatic access. Integrate vulnerability scanning into your CI/CD pipeline.',
+        'keywords' => 'API keys, API authentication, CVEFinder integration, API access, programmatic scanning'
+    ],
+    'faq' => [
+        'title' => 'FAQ - Frequently Asked Questions',
+        'description' => 'Find answers to common questions about CVEFinder.io vulnerability scanning, pricing, features, bulk scans, and API integration.',
+        'keywords' => 'CVEFinder FAQ, vulnerability scanner questions, scanning limits, bulk scan, API questions'
+    ]
+];
+
+// Use page-specific metadata if available
+$pageTitle = $pageMetadata[$page]['title'] ?? $title;
+$pageDescription = $pageMetadata[$page]['description'] ?? $description;
+$pageKeywords = $pageMetadata[$page]['keywords'] ?? 'CVEFinder API, vulnerability scanner API, CVE API, security scanning API';
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($title) ?> - CVEFinder.io Docs</title>
-    <meta name="description" content="Official CVEFinder.io API documentation. Learn how to integrate vulnerability scanning into your applications with our comprehensive API reference and guides.">
-    <meta name="keywords" content="CVEFinder API, vulnerability scanner API, CVE API, security scanning API, website security">
+    <title><?= htmlspecialchars($pageTitle) ?> | CVEFinder.io Documentation</title>
+    <meta name="description" content="<?= htmlspecialchars($pageDescription) ?>">
+    <meta name="keywords" content="<?= htmlspecialchars($pageKeywords) ?>">
     <meta name="author" content="CVEFinder.io">
-    <meta name="robots" content="index, follow">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+
+    <!-- Additional SEO Meta Tags -->
+    <meta name="language" content="English">
+    <meta name="revisit-after" content="7 days">
+    <meta name="distribution" content="global">
+    <meta name="rating" content="general">
+    <meta http-equiv="content-language" content="en-US">
 
     <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://docs.cvefinder.io/">
-    <meta property="og:title" content="<?= htmlspecialchars($title) ?> - CVEFinder.io Documentation">
-    <meta property="og:description" content="Official CVEFinder.io API documentation for developers">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://docs.cvefinder.io/?page=<?= htmlspecialchars($page) ?>">
+    <meta property="og:title" content="<?= htmlspecialchars($pageTitle) ?> | CVEFinder.io">
+    <meta property="og:description" content="<?= htmlspecialchars($pageDescription) ?>">
     <meta property="og:image" content="https://cvefinder.io/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="CVEFinder.io Documentation">
+    <meta property="og:locale" content="en_US">
+    <meta property="article:publisher" content="https://cvefinder.io">
+    <meta property="article:modified_time" content="<?= date('c') ?>">
 
     <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://docs.cvefinder.io/">
-    <meta property="twitter:title" content="<?= htmlspecialchars($title) ?> - CVEFinder.io Documentation">
-    <meta property="twitter:description" content="Official CVEFinder.io API documentation for developers">
-    <meta property="twitter:image" content="https://cvefinder.io/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@cvefinder">
+    <meta name="twitter:creator" content="@cvefinder">
+    <meta name="twitter:url" content="https://docs.cvefinder.io/?page=<?= htmlspecialchars($page) ?>">
+    <meta name="twitter:title" content="<?= htmlspecialchars($pageTitle) ?> | CVEFinder.io">
+    <meta name="twitter:description" content="<?= htmlspecialchars($pageDescription) ?>">
+    <meta name="twitter:image" content="https://cvefinder.io/og-image.png">
+    <meta name="twitter:image:alt" content="CVEFinder.io Documentation">
 
     <!-- Canonical URL -->
     <link rel="canonical" href="https://docs.cvefinder.io/?page=<?= htmlspecialchars($page) ?>">
@@ -65,27 +111,106 @@ $title = $matches[1] ?? 'CVEFinder.io Documentation';
 
     <link rel="icon" type="image/svg+xml" href="https://cvefinder.io/assets/img/favicon.svg">
 
-    <!-- Structured Data for SEO -->
+    <!-- Structured Data for SEO - Documentation/TechArticle -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "TechArticle",
-      "headline": "<?= htmlspecialchars($title) ?>",
-      "description": "Official CVEFinder.io API documentation for developers",
+      "headline": "<?= htmlspecialchars($pageTitle) ?>",
+      "description": "<?= htmlspecialchars($pageDescription) ?>",
+      "keywords": "<?= htmlspecialchars($pageKeywords) ?>",
+      "url": "https://docs.cvefinder.io/?page=<?= htmlspecialchars($page) ?>",
+      "image": "https://cvefinder.io/og-image.png",
       "author": {
         "@type": "Organization",
-        "name": "CVEFinder.io"
+        "name": "CVEFinder.io",
+        "url": "https://cvefinder.io"
       },
       "publisher": {
         "@type": "Organization",
         "name": "CVEFinder.io",
+        "url": "https://cvefinder.io",
         "logo": {
           "@type": "ImageObject",
-          "url": "https://cvefinder.io/assets/img/cvefinder_logo.png"
+          "url": "https://cvefinder.io/assets/img/cvefinder_logo.png",
+          "width": 200,
+          "height": 60
         }
       },
-      "datePublished": "2026-01-31",
-      "dateModified": "2026-01-31"
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://docs.cvefinder.io/?page=<?= htmlspecialchars($page) ?>"
+      },
+      "datePublished": "2026-01-31T00:00:00Z",
+      "dateModified": "<?= date('c') ?>",
+      "inLanguage": "en-US",
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "CVEFinder.io Documentation",
+        "url": "https://docs.cvefinder.io"
+      }
+    }
+    </script>
+
+    <!-- Breadcrumb Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://cvefinder.io"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Documentation",
+          "item": "https://docs.cvefinder.io"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "<?= htmlspecialchars($title) ?>",
+          "item": "https://docs.cvefinder.io/?page=<?= htmlspecialchars($page) ?>"
+        }
+      ]
+    }
+    </script>
+
+    <!-- SoftwareApplication Structured Data for API -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "CVEFinder.io API",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Any",
+      "description": "RESTful API for vulnerability scanning and CVE database queries. Scan websites, detect technologies, manage bulk scans, and access comprehensive security intelligence.",
+      "url": "https://cvefinder.io",
+      "documentation": "https://docs.cvefinder.io",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "description": "Free tier available with 3 scans per day. Pro tier offers 20 scans per day with bulk scanning for $9/month."
+      },
+      "featureList": [
+        "Website vulnerability scanning",
+        "Bulk scan mode (20 URLs simultaneously)",
+        "CVE database access",
+        "Technology detection",
+        "REST API integration",
+        "JSON exports",
+        "Email monitoring",
+        "Exploit database access"
+      ],
+      "author": {
+        "@type": "Organization",
+        "name": "CVEFinder.io"
+      }
     }
     </script>
 

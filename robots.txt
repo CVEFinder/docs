@@ -1,11 +1,81 @@
 # CVEFinder.io Documentation - robots.txt
+# Official API documentation and developer guides
 
-# Allow all search engines
+# ============================================
+# General Crawlers - Allow Full Access
+# ============================================
 User-agent: *
 Allow: /
+Crawl-delay: 0
 
-# Disallow vendor directory (not needed in search results)
+# Disallow unnecessary directories
 Disallow: /vendor/
+Disallow: /composer.json
+Disallow: /composer.lock
 
-# Sitemap location
+# ============================================
+# Specific Search Engine Crawlers
+# ============================================
+
+# Google
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+User-agent: Googlebot-Image
+Allow: /
+
+# Bing
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 0
+
+# Yandex
+User-agent: Yandex
+Allow: /
+Crawl-delay: 1
+
+# Baidu
+User-agent: Baiduspider
+Allow: /
+Crawl-delay: 1
+
+# DuckDuckGo
+User-agent: DuckDuckBot
+Allow: /
+
+# ============================================
+# AI Crawlers - Allow for Training
+# ============================================
+
+# OpenAI GPT
+User-agent: GPTBot
+Allow: /
+
+# Anthropic Claude
+User-agent: Claude-Web
+Allow: /
+
+# Google Bard/Gemini
+User-agent: Google-Extended
+Allow: /
+
+# Common Crawl
+User-agent: CCBot
+Allow: /
+
+# ============================================
+# Sitemaps
+# ============================================
 Sitemap: https://docs.cvefinder.io/sitemap.xml
+
+# Link to main site sitemap
+Sitemap: https://cvefinder.io/sitemap.xml
+
+# ============================================
+# Crawl Rules Notes
+# ============================================
+# - All documentation pages are public and indexable
+# - API reference, FAQ, and guides are high priority
+# - Vendor directories excluded to prevent duplicate content
+# - AI crawlers allowed to improve search and recommendations
