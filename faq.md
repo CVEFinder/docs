@@ -15,12 +15,13 @@ CVEFinder.io scans websites by analyzing HTTP headers, HTML content, JavaScript 
 Yes! We offer three tiers:
 - **Guest**: 1 scan per day (no account required)
 - **Free**: 3 scans per day with basic CVE information
-- **Pro**: 10 scans per day with advanced features ($9/month)
+- **Pro**: 20 scans per day with advanced features ($9/month)
 
 ### What's the difference between Free and Pro plans?
 
 Pro users get:
-- 10 scans per day (vs 3 for Free)
+- 20 scans per day (vs 3 for Free)
+- Bulk scan mode (20 URLs at once)
 - Full CVE database access
 - Exploit database & PoC code
 - API keys for integration
@@ -37,13 +38,17 @@ Pro users get:
 
 - **Guest**: 1 scan per day
 - **Free**: 3 scans per day
-- **Pro**: 10 scans per day
+- **Pro**: 20 scans per day (including bulk scan mode for up to 20 URLs at once)
 
 Scans reset daily at midnight UTC.
 
 ### Can I scan the same website multiple times?
 
 Yes, but it will count toward your daily scan limit unless you're a Pro user. Pro users can manually rescan/refresh existing scans without using a scan credit.
+
+### What is bulk scan mode?
+
+Bulk scan mode is a Pro-only feature that allows you to scan up to 20 URLs simultaneously in a single operation. Simply switch to the "Bulk Scan" tab on the homepage, paste your URLs (one per line), and submit. You can track progress and view all results from a single dashboard.
 
 ### What technologies can CVEFinder.io detect?
 

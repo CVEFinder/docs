@@ -78,7 +78,7 @@ Content-Type: application/json
 {
   "success": false,
   "error": "Daily scan limit reached",
-  "limit": 10,
+  "limit": 20,
   "upgrade_action": "upgrade"
 }
 ```
@@ -86,7 +86,7 @@ Content-Type: application/json
 **Rate Limits:**
 - Guest: 1 scan per day
 - Free: 3 scans per day
-- Pro: 10 scans per day
+- Pro: 20 scans per day
 
 **cURL Example:**
 ```bash
@@ -220,6 +220,212 @@ Authorization: Bearer <token>
 **cURL Example:**
 ```bash
 curl -X GET https://cvefinder.io/api/recent-scans \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+---
+
+### Bulk Scan (Pro)
+
+Scan multiple URLs simultaneously (up to 20 URLs).
+
+**Endpoint:**
+```
+POST /api/bulk-scan
+```
+
+**Authentication:** Required (Pro users only)
+
+**Request Headers:**
+```http
+Authorization: Bearer <token>
+Content-Type: application/json
+X-Recaptcha-Token: <recaptcha_token>  // Required for web requests, not for API keys
+```
+
+**Request Body:**
+```json
+{
+  "urls": "https://example.com\nhttps://example.org\nhttps://example.net"
+}
+```
+
+**Parameters:**
+- `urls` (required): Newline-separated list of URLs (2-20 URLs, max 10KB)
+
+**Response (Success):**
+```json
+{
+  "success": true,
+  "bulk_scan_id": 456,
+  "total_urls": 3,
+  "scans_created": 3,
+  "failed": 0,
+  "url": "/bulk-scan/456"
+}
+```
+
+**Response (Error - Pro Required):**
+```json
+{
+  "success": false,
+  "error": "Bulk scan is only available to Pro users",
+  "upgrade_url": "/pricing",
+  "tier": "free"
+}
+```
+
+**Response (Error - Limit Exceeded):**
+```json
+{
+  "success": false,
+  "error": "Maximum 20 URLs allowed per bulk scan",
+  "provided": 25,
+  "limit": 20
+}
+```
+
+**cURL Example:**
+```bash
+curl -X POST https://cvefinder.io/api/bulk-scan \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"urls": "https://example.com\nhttps://example.org\nhttps://example.net"}'
+```
+
+---
+
+### Get Bulk Scan Status (Pro)
+
+Retrieve status and progress of a bulk scan.
+
+**Endpoint:**
+```
+GET /api/get-bulk-scan?id=<bulk_scan_id>
+```
+
+**Authentication:** Required (Pro users only, must own the bulk scan)
+
+**Request Headers:**
+```http
+Authorization: Bearer <token>
+```
+
+**Query Parameters:**
+- `id` (required): The bulk scan ID
+
+**Response (Success):**
+```json
+{
+  "success": true,
+  "bulk_scan": {
+    "id": 456,
+    "total_urls": 3,
+    "completed_scans": 2,
+    "pending_scans": 1,
+    "failed_scans": 0,
+    "status": "processing",
+    "progress_percentage": 67,
+    "created_at": "2026-02-14 10:00:00",
+    "updated_at": "2026-02-14 10:01:00"
+  },
+  "scans": [
+    {
+      "id": 12345,
+      "domain": "example.com",
+      "url": "https://example.com",
+      "status": "completed",
+      "tech_count": 8,
+      "cve_count": 15,
+      "created_at": "2026-02-14 10:00:05",
+      "updated_at": "2026-02-14 10:00:20"
+    },
+    {
+      "id": 12346,
+      "domain": "example.org",
+      "url": "https://example.org",
+      "status": "completed",
+      "tech_count": 5,
+      "cve_count": 8,
+      "created_at": "2026-02-14 10:00:10",
+      "updated_at": "2026-02-14 10:00:30"
+    },
+    {
+      "id": 12347,
+      "domain": "example.net",
+      "url": "https://example.net",
+      "status": "pending",
+      "tech_count": 0,
+      "cve_count": 0,
+      "created_at": "2026-02-14 10:00:15",
+      "updated_at": "2026-02-14 10:00:15"
+    }
+  ]
+}
+```
+
+**Status Values:**
+- `processing`: Scans are still running
+- `completed`: All scans finished successfully
+- `failed`: All scans failed
+
+**cURL Example:**
+```bash
+curl -X GET "https://cvefinder.io/api/get-bulk-scan?id=456" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+---
+
+### Get Recent Bulk Scans (Pro)
+
+Retrieve the user's recent bulk scan history with pagination.
+
+**Endpoint:**
+```
+GET /api/account-recent-bulk-scans
+```
+
+**Authentication:** Required (Pro users only)
+
+**Request Headers:**
+```http
+Authorization: Bearer <token>
+```
+
+**Query Parameters:**
+- `page` (optional): Page number (default: 1)
+- `per_page` (optional): Results per page, 5-10 (default: 10)
+
+**Response (Success):**
+```json
+{
+  "success": true,
+  "bulk_scans": [
+    {
+      "id": 456,
+      "total_urls": 3,
+      "completed_scans": 3,
+      "failed_scans": 0,
+      "status": "completed",
+      "created_at": "2026-02-14 10:00:00",
+      "updated_at": "2026-02-14 10:01:30"
+    }
+  ],
+  "pagination": {
+    "current_page": 1,
+    "per_page": 10,
+    "total_bulk_scans": 1,
+    "total_pages": 1,
+    "has_next": false,
+    "has_prev": false
+  }
+}
+```
+
+**cURL Example:**
+```bash
+curl -X GET "https://cvefinder.io/api/account-recent-bulk-scans?page=1&per_page=10" \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
 
@@ -824,8 +1030,8 @@ GET /api/account-data
   },
   "limit_info": {
     "used": 3,
-    "limit": 10,
-    "remaining": 7,
+    "limit": 20,
+    "remaining": 17,
     "tier": "pro"
   },
   "api_keys_count": 2,
@@ -939,11 +1145,12 @@ All API endpoints use standard HTTP status codes and return consistent error res
 ### Scan Limits (per day)
 - Guest: 1 scan
 - Free: 3 scans
-- Pro: 10 scans
+- Pro: 20 scans (including bulk scan mode for up to 20 URLs at once)
 
 ### API Request Limits
 - General API calls: No hard limit (fair use policy)
 - Scan endpoint: Subject to daily scan quota
+- Bulk scan endpoint: Pro only, max 20 URLs per request
 - Pro features: Require active Pro subscription
 
 ### Best Practices
